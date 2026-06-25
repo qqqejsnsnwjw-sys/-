@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>创艺塑胶 · 塑料原料与制品选购</title>
+<style>
+  :root{
+    --bg: #EFEDF4;
+    --panel: #FFFFFF;
+    --ink: #211D2E;
+    --ink-soft: #6B6378;
+    --navy: #3D3166;
+    --navy-deep: #261F45;
+    --amber: #FF6B4D;
+    --amber-deep: #E14B2E;
+    --line: #DDD8E6;
+    --mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+    --disp: 'Space Grotesk', 'Archivo', sans-serif;
+    --body: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+
+    --c-pp: #2E7D6B;
+    --c-pe: #2E6B9E;
+    --c-pvc: #8A4FB0;
+    --c-abs: #B0432F;
+    --c-pc: #1A6E7A;
+    --c-eva: #C2932E;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--body);
+    line-height:1.5;
+    padding-bottom:90px;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+
+  a, button{ font-family:inherit; cursor:pointer; }
+
+  /* ===== Top bar ===== */
+  .topbar{
+    background:var(--navy-deep);
+    color:#EAF2F1;
+    padding:10px 28px;
+    font-size:12.5px;
+    display:flex;
+    justify-content:space-between;
+    letter-spacing:.02em;
+    font-family:var(--mono);
+  }
+  .topbar span b{ color:var(--amber); font-weight:600; }
+
+  header.hero{
+    background:linear-gradient(155deg, var(--navy) 0%, var(--navy-deep) 62%);
+    color:#fff;
+    padding:54px 28px 64px;
+    position:relative;
+    overflow:hidden;
+  }
+  header.hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.045) 0 1px, transparent 1px 42px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.045) 0 1px, transparent 1px 42px);
+    pointer-events:none;
+  }
+  .hero-inner{ max-width:1180px; margin:0 auto; position:relative; }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--amber);
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:7px; height:7px;
+    background:var(--amber);
+    border-radius:50%;
+    display:inline-block;
+  }
+  h1.title{
+    font-family:var(--disp);
+    font-weight:600;
+    font-size:clamp(30px, 4.2vw, 48px);
+    letter-spacing:-.01em;
+    max-width:780px;
+    margin-bottom:18px;
+  }
+  .hero p.sub{
+    max-width:560px;
+    color:#C9D6D2;
+    font-size:15.5px;
+    margin-bottom:30px;
+  }
+  .hero-stats{
+    display:flex;
+    gap:36px;
+    flex-wrap:wrap;
+  }
+  .stat b{
+    font-family:var(--mono);
+    font-size:24px;
+    color:#fff;
+    display:block;
+  }
+  .stat span{
+    font-size:12px;
+    color:#9FB3AE;
+    letter-spacing:.03em;
+  }
+
+  /* ===== Filter bar ===== */
+  .filterbar{
+    max-width:1180px;
+    margin:-28px auto 0;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:18px 22px;
+    position:relative;
+    z-index:5;
+    display:flex;
+    gap:18px;
+    align-items:center;
+    flex-wrap:wrap;
+    box-shadow:0 16px 40px -22px rgba(14,39,51,0.35);
+  }
+  .search-box{
+    flex:1 1 240px;
+    display:flex;
+    align-items:center;
+    border:1px solid var(--line);
+    border-radius:7px;
+    padding:9px 12px;
+    gap:8px;
+  }
+  .search-box input{
+    border:none; outline:none; flex:1; font-size:14px; color:var(--ink); background:transparent;
+  }
+  .search-box svg{ width:16px; height:16px; color:var(--ink-soft); flex-shrink:0; }
+
+  .chip-row{ display:flex; gap:8px; flex-wrap:wrap; }
+  .chip{
+    border:1px solid var(--line);
+    background:#fff;
+    color:var(--ink-soft);
+    font-size:13px;
+    padding:7px 14px;
+    border-radius:20px;
+    transition:border-color .15s, color .15s, background .15s;
+    white-space:nowrap;
+  }
+  .chip[data-active="true"]{
+    background:var(--navy);
+    border-color:var(--navy);
+    color:#fff;
+  }
+  .chip:hover{ border-color:var(--navy); color:var(--navy); }
+  .chip[data-active="true"]:hover{ color:#fff; }
+
+  .sort-select{
+    border:1px solid var(--line);
+    border-radius:7px;
+    padding:9px 10px;
+    font-size:13px;
+    color:var(--ink-soft);
+    background:#fff;
+  }
+
+  /* ===== Section ===== */
+  .section{ max-width:1180px; margin:0 auto; padding:40px 28px 0; }
+  .section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:18px;
+  }
+  .section-head h2{
+    font-family:var(--disp);
+    font-size:20px;
+    font-weight:600;
+  }
+  .section-head .count{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--ink-soft);
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(260px,1fr));
+    gap:18px;
+  }
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 18px 32px -20px rgba(14,39,51,0.3);
+  }
+  .card-media{
+    position:relative;
+    aspect-ratio:4/3;
+    background:
+      repeating-linear-gradient(45deg, rgba(0,0,0,0.035) 0 2px, transparent 2px 14px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+  .card-media img{
+    width:100%; height:100%;
+    object-fit:cover;
+  }
+  .card-media .swatch{
+    width:64px; height:64px;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:var(--mono);
+    font-weight:700;
+    font-size:15px;
+    color:#fff;
+    box-shadow:inset 0 -10px 18px rgba(0,0,0,0.18), 0 6px 16px -8px rgba(0,0,0,0.35);
+  }
+  .card-media .tag-stock{
+    position:absolute;
+    top:10px; left:10px;
+    font-family:var(--mono);
+    font-size:10.5px;
+    padding:3px 8px;
+    border-radius:5px;
+    background:rgba(255,255,255,0.92);
+    color:var(--ink-soft);
+    letter-spacing:.02em;
+  }
+  .card-media .tag-stock[data-low="true"]{ color:var(--amber-deep); }
+  .card-body{ padding:16px; display:flex; flex-direction:column; gap:8px; flex:1; }
+  .card-cat{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.06em;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+  }
+  .card-name{ font-size:15.5px; font-weight:600; color:var(--ink); }
+  .card-spec{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--ink-soft);
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px 10px;
+  }
+  .card-spec span{ white-space:nowrap; }
+  .card-foot{
+    margin-top:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-top:10px;
+    border-top:1px dashed var(--line);
+  }
+  .card-price{ font-family:var(--mono); font-weight:700; font-size:15px; color:var(--navy); }
+  .card-price small{ font-weight:400; font-size:11px; color:var(--ink-soft); }
+  .btn-add{
+    border:1px solid var(--navy);
+    color:var(--navy);
+    background:#fff;
+    font-size:12.5px;
+    padding:7px 13px;
+    border-radius:6px;
+    transition:background .15s, color .15s;
+  }
+  .btn-add:hover{ background:var(--navy); color:#fff; }
+  .btn-add[data-added="true"]{
+    background:var(--amber);
+    border-color:var(--amber);
+    color:#fff;
+  }
+  .card-name-link{ cursor:pointer; }
+  .card-name-link:hover{ color:var(--amber-deep); }
+
+  .empty-state{
+    text-align:center;
+    padding:60px 0;
+    color:var(--ink-soft);
+    font-size:14px;
+  }
+
+  /* ===== Selection bar ===== */
+  .selbar{
+    position:fixed;
+    bottom:0; left:0; right:0;
+    background:var(--navy-deep);
+    color:#fff;
+    padding:14px 28px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    z-index:50;
+    box-shadow:0 -10px 30px rgba(0,0,0,0.25);
+    transform:translateY(0);
+    transition:transform .25s ease;
+  }
+  .selbar[data-empty="true"]{ transform:translateY(100%); }
+  .selbar .left{ display:flex; align-items:center; gap:16px; }
+  .selbar .count-badge{
+    background:var(--amber);
+    color:#fff;
+    font-family:var(--mono);
+    font-weight:700;
+    font-size:13px;
+    width:28px; height:28px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .selbar .preview{ display:flex; gap:6px; }
+  .selbar .preview .dot{
+    width:8px;height:8px;border-radius:50%;
+  }
+  .selbar-link{ color:#C9D6D2; font-size:13px; text-decoration:underline; text-decoration-color:rgba(255,255,255,0.3); }
+  .selbar-link:hover{ color:#fff; }
+  .btn-inquire{
+    background:var(--amber);
+    color:#fff;
+    border:none;
+    padding:11px 22px;
+    border-radius:7px;
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:.01em;
+    transition:background .15s;
+  }
+  .btn-inquire:hover{ background:var(--amber-deep); }
+
+  /* ===== Modal: detail ===== */
+  .modal-overlay{
+    position:fixed; inset:0;
+    background:rgba(14,39,51,0.55);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+    padding:24px;
+  }
+  .modal-overlay[data-open="true"]{ display:flex; }
+  .modal{
+    background:#fff;
+    border-radius:12px;
+    max-width:780px;
+    width:100%;
+    max-height:88vh;
+    overflow-y:auto;
+    display:grid;
+    grid-template-columns:280px 1fr;
+  }
+  @media (max-width:640px){ .modal{ grid-template-columns:1fr; } }
+  .modal-media{
+    background:repeating-linear-gradient(45deg, rgba(0,0,0,0.035) 0 2px, transparent 2px 14px);
+    display:flex; align-items:center; justify-content:center;
+    min-height:220px;
+    overflow:hidden;
+  }
+  .modal-media img{
+    width:100%; height:100%;
+    object-fit:cover;
+  }
+  .modal-media .swatch{
+    width:110px; height:110px; border-radius:20px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-weight:700; font-size:22px; color:#fff;
+    box-shadow:inset 0 -14px 24px rgba(0,0,0,0.18), 0 8px 20px -10px rgba(0,0,0,0.35);
+  }
+  .modal-content{ padding:26px 28px; }
+  .modal-close{
+    position:absolute; top:16px; right:16px;
+    width:30px; height:30px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    background:#fff;
+    font-size:15px;
+    color:var(--ink-soft);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .modal-close:hover{ color:var(--ink); border-color:var(--ink-soft); }
+  .modal-cat{ font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; color:var(--ink-soft); text-transform:uppercase; }
+  .modal h3{ font-family:var(--disp); font-size:22px; margin:6px 0 14px; }
+  .modal-table{ width:100%; border-collapse:collapse; margin-bottom:18px; }
+  .modal-table tr{ border-bottom:1px solid var(--line); }
+  .modal-table td{ padding:8px 0; font-size:13.5px; }
+  .modal-table td:first-child{ color:var(--ink-soft); width:90px; font-family:var(--mono); font-size:12px; }
+  .modal-desc{ font-size:13.5px; color:var(--ink-soft); line-height:1.7; margin-bottom:20px; }
+  .modal-actions{ display:flex; gap:10px; }
+  .modal-actions .btn-add{ flex:1; text-align:center; padding:10px; }
+
+  /* focus visibility */
+  button:focus-visible, input:focus-visible, .chip:focus-visible, .card-name-link:focus-visible{
+    outline:2px solid var(--amber);
+    outline-offset:2px;
+  }
+
+  footer{
+    max-width:1180px; margin:60px auto 0; padding:24px 28px 40px;
+    color:var(--ink-soft); font-size:12.5px;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+    border-top:1px solid var(--line);
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span>创艺塑胶 · 工业塑料原料 / 板材 / 管材一站式供应</span>
+  <span>工作日 09:00–18:00 在线报价 <b>·</b> 批量采购享阶梯价</span>
+</div>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">产品选型手册 · 2026版</div>
+    <h1 class="title">从颗粒到成型件，<br>把合适的材料配给合适的工艺。</h1>
+    <p class="sub">按材质、规格与用途筛选产品，加入选品单后一键发起询价，我们会在 24 小时内给到含运费的报价单。</p>
+    <div class="hero-stats">
+      <div class="stat"><b>36</b><span>在售规格</span></div>
+      <div class="stat"><b>6</b><span>材质大类</span></div>
+      <div class="stat"><b>≥99.2%</b><span>批次稳定性</span></div>
+      <div class="stat"><b>72h</b><span>常规发货</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="filterbar">
+  <div class="search-box">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input id="searchInput" type="text" placeholder="搜索产品名称、材质或货号，如 PP / PC-2210" />
+  </div>
+  <div class="chip-row" id="chipRow"></div>
+  <select class="sort-select" id="sortSelect">
+    <option value="default">默认排序</option>
+    <option value="price-asc">价格从低到高</option>
+    <option value="price-desc">价格从高到低</option>
+  </select>
+</div>
+
+<div class="section">
+  <div class="section-head">
+    <h2>全部产品</h2>
+    <span class="count" id="resultCount"></span>
+  </div>
+  <div class="grid" id="productGrid"></div>
+  <div class="empty-state" id="emptyState" style="display:none;">没有找到匹配的产品，换个关键词或分类试试。</div>
+</div>
+
+<footer>
+  <span>本页数据为示例信息，实际规格与价格以正式报价单为准。</span>
+  <span>创艺塑胶 · 演示用产品选购页</span>
+</footer>
+
+<div class="selbar" id="selBar" data-empty="true">
+  <div class="left">
+    <span class="count-badge" id="selCount">0</span>
+    <span class="preview" id="selPreview"></span>
+    <a class="selbar-link" id="clearSel">清空选品单</a>
+  </div>
+  <button class="btn-inquire" id="inquireBtn">生成询价清单 →</button>
+</div>
+
+<div class="modal-overlay" id="modalOverlay" data-open="false">
+  <div class="modal" style="position:relative;" id="modalBox">
+    <button class="modal-close" id="modalClose">✕</button>
+  </div>
+</div>
+
+<script>
+const MATERIALS = {
+  PP:  {label:'PP 聚丙烯',  color:'var(--c-pp)'},
+  PE:  {label:'PE 聚乙烯',  color:'var(--c-pe)'},
+  PVC: {label:'PVC 聚氯乙烯', color:'var(--c-pvc)'},
+  ABS: {label:'ABS 工程塑料', color:'var(--c-abs)'},
+  PC:  {label:'PC 聚碳酸酯', color:'var(--c-pc)'},
+  EVA: {label:'EVA 泡棉材料', color:'var(--c-eva)'},
+};
+
+const PRODUCTS = [
+  {id:'pp-001', mat:'PP', name:'PP 均聚注塑颗粒', code:'PP-T30', specs:[['密度','0.90 g/cm³'],['熔指','30 g/10min'],['包装','25kg/袋']], price:7.8, unit:'元/kg', stock:'现货充足', desc:'通用注塑级聚丙烯颗粒，流动性好，适用于日用品、文具及薄壁件注塑成型。', img:'https://placehold.co/500x375/c0392b/ffffff?text=PP-T30'},
+  {id:'pp-002', mat:'PP', name:'PP 共聚抗冲颗粒', code:'PP-K20', specs:[['密度','0.91 g/cm³'],['冲击强度','38 kJ/m²'],['包装','25kg/袋']], price:8.6, unit:'元/kg', stock:'现货充足', desc:'抗冲共聚型号，低温韧性优秀，常用于汽车内饰件与周转箱。', img:'https://placehold.co/500x375/c0392b/ffffff?text=PP-K20'},
+  {id:'pp-003', mat:'PP', name:'PP 阻燃板材', code:'PP-FR5', specs:[['厚度','5mm'],['阻燃级','UL94 V0'],['幅面','1.22×2.44m']], price:46, unit:'元/张', stock:'库存较低', desc:'V0级阻燃PP板，适用于电气设备外壳及防腐工程隔板。', img:'https://placehold.co/500x375/c0392b/ffffff?text=PP-FR5'},
+  {id:'pe-001', mat:'PE', name:'HDPE 高密度颗粒', code:'PE-H50', specs:[['密度','0.954 g/cm³'],['熔指','5 g/10min'],['包装','25kg/袋']], price:7.2, unit:'元/kg', stock:'现货充足', desc:'高密度聚乙烯，刚性与耐化学性俱佳，适合中空吹塑容器与管材。', img:'https://placehold.co/500x375/c0392b/ffffff?text=PE-H50'},
+  {id:'pe-002', mat:'PE', name:'LDPE 薄膜级颗粒', code:'PE-L18', specs:[['密度','0.922 g/cm³'],['熔指','2 g/10min'],['包装','25kg/袋']], price:7.9, unit:'元/kg', stock:'现货充足', desc:'低密度聚乙烯，透明度高、柔韧性好，常用于包装薄膜与软管。', img:'https://placehold.co/500x375/c0392b/ffffff?text=PE-L18'},
+  {id:'pe-003', mat:'PE', name:'PE100 给水管材', code:'PE-D110', specs:[['外径','110mm'],['壁厚','6.6mm'],['压力等级','PN1.0']], price:88, unit:'元/米', stock:'现货充足', desc:'PE100级给水管，符合饮用水管材标准，耐压稳定，焊接施工方便。'},
+  {id:'pvc-001', mat:'PVC', name:'PVC 排水管材', code:'PVC-D110', specs:[['外径','110mm'],['壁厚','3.2mm'],['长度','4m/支']], price:32, unit:'元/支', stock:'现货充足', desc:'UPVC排水管，耐腐蚀、阻燃性好，广泛用于建筑排水系统。'},
+  {id:'pvc-002', mat:'PVC', name:'PVC 装饰硬板', code:'PVC-S10', specs:[['厚度','10mm'],['密度','0.55 g/cm³'],['幅面','1.22×2.44m']], price:128, unit:'元/张', stock:'库存较低', desc:'PVC自由发泡板，质轻易加工，适用于广告展示与室内装饰。'},
+  {id:'pvc-003', mat:'PVC', name:'PVC 透明软管', code:'PVC-C8', specs:[['内径','8mm'],['壁厚','1.5mm'],['长度','100m/卷']], price:3.6, unit:'元/米', stock:'现货充足', desc:'食品级透明软管，柔软耐折，适用于饮料输送及实验室用途。'},
+  {id:'abs-001', mat:'ABS', name:'ABS 注塑通用颗粒', code:'ABS-G15', specs:[['密度','1.05 g/cm³'],['冲击强度','25 kJ/m²'],['包装','25kg/袋']], price:13.5, unit:'元/kg', stock:'现货充足', desc:'通用级ABS颗粒，表面光泽好，常用于家电外壳及玩具结构件。'},
+  {id:'abs-002', mat:'ABS', name:'ABS 电镀级颗粒', code:'ABS-EP', specs:[['密度','1.06 g/cm³'],['熔指','22 g/10min'],['包装','25kg/袋']], price:16.2, unit:'元/kg', stock:'库存较低', desc:'专用于电镀工艺的高光泽ABS料，附着力强，适合汽车装饰件。'},
+  {id:'abs-003', mat:'ABS', name:'ABS 工程板材', code:'ABS-B6', specs:[['厚度','6mm'],['颜色','本白/黑'],['幅面','1.22×2.44m']], price:198, unit:'元/张', stock:'现货充足', desc:'高强度ABS板，易于热弯加工，常用于设备外壳与模型制作。'},
+  {id:'pc-001', mat:'PC', name:'PC 透明颗粒', code:'PC-V30', specs:[['密度','1.20 g/cm³'],['透光率','89%'],['包装','25kg/袋']], price:24.5, unit:'元/kg', stock:'现货充足', desc:'高透明聚碳酸酯颗粒，耐冲击、耐候性强，适合灯具及防护件。'},
+  {id:'pc-002', mat:'PC', name:'PC 阳光板', code:'PC-SH8', specs:[['厚度','8mm'],['层数','双层中空'],['幅面','2.1×6m']], price:168, unit:'元/卷', stock:'现货充足', desc:'双层中空阳光板，隔热保温，广泛用于温室大棚与雨棚顶。'},
+  {id:'pc-003', mat:'PC', name:'PC 防爆面板', code:'PC-AR5', specs:[['厚度','5mm'],['抗冲击','UL752 Lv1'],['幅面','1.22×2.44m']], price:312, unit:'元/张', stock:'库存较低', desc:'防爆等级PC板，用于安防隔断及防护窗，抗暴击性能优异。'},
+  {id:'eva-001', mat:'EVA', name:'EVA 包装泡棉', code:'EVA-F10', specs:[['厚度','10mm'],['密度','0.12 g/cm³'],['颜色','黑/灰/蓝']], price:22, unit:'元/平米', stock:'现货充足', desc:'高弹性EVA泡棉，缓冲减震效果好，常用于精密仪器包装内衬。'},
+  {id:'eva-002', mat:'EVA', name:'EVA 运动鞋材', code:'EVA-S20', specs:[['厚度','20mm'],['硬度','Asker C 45'],['密度','0.15 g/cm³']], price:34, unit:'元/平米', stock:'现货充足', desc:'回弹性优异的鞋材级EVA，用于运动鞋中底及瑜伽垫制作。'},
+  {id:'eva-003', mat:'EVA', name:'EVA 太阳能封装膜', code:'EVA-PV4', specs:[['厚度','0.4mm'],['交联度','≥80%'],['幅面','1m×宽幅']], price:9.5, unit:'元/平米', stock:'库存较低', desc:'光伏组件专用EVA封装胶膜，透光率高，封装稳定性好。'},
+];
+
+let activeFilter = 'all';
+let selection = new Set();
+
+function chipList(){
+  const cats = ['all', ...Object.keys(MATERIALS)];
+  return cats.map(c => {
+    const label = c === 'all' ? '全部材质' : MATERIALS[c].label.split(' ')[0];
+    return `<button class="chip" data-cat="${c}" data-active="${c===activeFilter}">${label}</button>`;
+  }).join('');
+}
+
+function renderChips(){
+  document.getElementById('chipRow').innerHTML = chipList();
+  document.querySelectorAll('.chip').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      activeFilter = el.dataset.cat;
+      renderChips();
+      renderGrid();
+    });
+  });
+}
+
+function getFiltered(){
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const sort = document.getElementById('sortSelect').value;
+  let list = PRODUCTS.filter(p => activeFilter === 'all' || p.mat === activeFilter);
+  if(q){
+    list = list.filter(p =>
+      p.name.toLowerCase().includes(q) ||
+      p.code.toLowerCase().includes(q) ||
+      MATERIALS[p.mat].label.toLowerCase().includes(q)
+    );
+  }
+  if(sort === 'price-asc') list = [...list].sort((a,b)=>a.price-b.price);
+  if(sort === 'price-desc') list = [...list].sort((a,b)=>b.price-a.price);
+  return list;
+}
+
+function cardTemplate(p){
+  const mat = MATERIALS[p.mat];
+  const added = selection.has(p.id);
+  const initials = p.mat;
+  const mediaInner = p.img
+    ? `<img src="${p.img}" alt="${p.name}" loading="lazy" />`
+    : `<div class="swatch" style="background:${mat.color}">${initials}</div>`;
+  return `
+  <div class="card" data-id="${p.id}">
+    <div class="card-media">
+      <span class="tag-stock" data-low="${p.stock.includes('较低')}">${p.stock}</span>
+      ${mediaInner}
+    </div>
+    <div class="card-body">
+      <div class="card-cat">${mat.label}</div>
+      <div class="card-name card-name-link" tabindex="0" data-open="${p.id}">${p.name}</div>
+      <div class="card-spec">
+        ${p.specs.map(s=>`<span>${s[0]} ${s[1]}</span>`).join('')}
+      </div>
+      <div class="card-foot">
+        <div class="card-price">¥${p.price.toFixed(1)} <small>/${p.unit.replace('元/','')}</small></div>
+        <button class="btn-add" data-id="${p.id}" data-added="${added}">${added ? '已加入' : '加入选品单'}</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderGrid(){
+  const list = getFiltered();
+  const grid = document.getElementById('productGrid');
+  const empty = document.getElementById('emptyState');
+  document.getElementById('resultCount').textContent = `共 ${list.length} 项`;
+  if(list.length === 0){
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    grid.innerHTML = list.map(cardTemplate).join('');
+  }
+  grid.querySelectorAll('.btn-add').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      toggleSelect(btn.dataset.id);
+    });
+  });
+  grid.querySelectorAll('[data-open]').forEach(el=>{
+    el.addEventListener('click', ()=> openModal(el.dataset.open));
+    el.addEventListener('keypress', (e)=>{ if(e.key==='Enter') openModal(el.dataset.open); });
+  });
+}
+
+function toggleSelect(id){
+  if(selection.has(id)) selection.delete(id); else selection.add(id);
+  renderGrid();
+  renderSelBar();
+}
+
+function renderSelBar(){
+  const bar = document.getElementById('selBar');
+  bar.dataset.empty = selection.size === 0;
+  document.getElementById('selCount').textContent = selection.size;
+  const preview = [...selection].slice(0,6).map(id=>{
+    const p = PRODUCTS.find(x=>x.id===id);
+    return `<span class="dot" style="background:${MATERIALS[p.mat].color}"></span>`;
+  }).join('');
+  document.getElementById('selPreview').innerHTML = preview;
+}
+
+document.getElementById('clearSel').addEventListener('click', ()=>{
+  selection.clear();
+  renderGrid();
+  renderSelBar();
+});
+
+document.getElementById('inquireBtn').addEventListener('click', ()=>{
+  if(selection.size === 0) return;
+  const items = [...selection].map(id=>{
+    const p = PRODUCTS.find(x=>x.id===id);
+    return `· ${p.name}（${p.code}）`;
+  }).join('\n');
+  alert('已生成询价清单（演示）：\n\n' + items + '\n\n实际产品中此处将提交给销售团队并生成正式报价单。');
+});
+
+function openModal(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  const mat = MATERIALS[p.mat];
+  const added = selection.has(p.id);
+  const mediaInner = p.img
+    ? `<img src="${p.img}" alt="${p.name}" />`
+    : `<div class="swatch" style="background:${mat.color}">${p.mat}</div>`;
+  document.getElementById('modalBox').innerHTML = `
+    <button class="modal-close" id="modalClose">✕</button>
+    <div class="modal-media">${mediaInner}</div>
+    <div class="modal-content">
+      <div class="modal-cat">${mat.label} · 货号 ${p.code}</div>
+      <h3>${p.name}</h3>
+      <table class="modal-table">
+        ${p.specs.map(s=>`<tr><td>${s[0]}</td><td>${s[1]}</td></tr>`).join('')}
+        <tr><td>库存状态</td><td>${p.stock}</td></tr>
+      </table>
+      <p class="modal-desc">${p.desc}</p>
+      <div class="modal-actions">
+        <button class="btn-add" data-id="${p.id}" data-added="${added}" style="flex:1">${added?'已加入选品单':'加入选品单'}</button>
+        <div class="card-price" style="align-self:center; padding:0 12px;">¥${p.price.toFixed(1)} <small>/${p.unit.replace('元/','')}</small></div>
+      </div>
+    </div>`;
+  document.getElementById('modalOverlay').dataset.open = 'true';
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  document.querySelector('.modal-actions .btn-add').addEventListener('click', ()=>{
+    toggleSelect(p.id);
+    closeModal();
+  });
+}
+function closeModal(){ document.getElementById('modalOverlay').dataset.open = 'false'; }
+document.getElementById('modalOverlay').addEventListener('click', (e)=>{
+  if(e.target.id === 'modalOverlay') closeModal();
+});
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+
+document.getElementById('searchInput').addEventListener('input', renderGrid);
+document.getElementById('sortSelect').addEventListener('change', renderGrid);
+
+renderChips();
+renderGrid();
+renderSelBar();
+</script>
+
+</body>
+</html>
