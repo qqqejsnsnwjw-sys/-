@@ -430,20 +430,20 @@
 <body>
 
 <div class="topbar">
-  <span>创艺塑胶 · 工业塑料原料 / 板材 / 管材一站式供应</span>
+  <span>创艺塑胶 · 专业塑料色母配色定制 / 色卡打样 / 批量供色</span>
   <span>工作日 09:00–18:00 在线报价 <b>·</b> 批量采购享阶梯价</span>
 </div>
 
 <header class="hero">
   <div class="hero-inner">
-    <div class="eyebrow">产品选型手册 · 2026版</div>
-    <h1 class="title">从颗粒到成型件，<br>把合适的材料配给合适的工艺。</h1>
-    <p class="sub">按材质、规格与用途筛选产品，加入选品单后一键发起询价，我们会在 24 小时内给到含运费的报价单。</p>
+    <div class="eyebrow">色母配色手册 · 2026版</div>
+    <h1 class="title">配色是手艺，<br>更是我们的核心技术。</h1>
+    <p class="sub">提供精准色差控制的塑料色母粒定制服务，按色号、载体树脂与用途筛选产品，加入选品单后一键发起询价或打样申请。</p>
     <div class="hero-stats">
-      <div class="stat"><b>36</b><span>在售规格</span></div>
-      <div class="stat"><b>6</b><span>材质大类</span></div>
-      <div class="stat"><b>≥99.2%</b><span>批次稳定性</span></div>
-      <div class="stat"><b>72h</b><span>常规发货</span></div>
+      <div class="stat"><b>1200+</b><span>色卡储备</span></div>
+      <div class="stat"><b>ΔE≤0.5</b><span>色差控制精度</span></div>
+      <div class="stat"><b>48h</b><span>打样周期</span></div>
+      <div class="stat"><b>72h</b><span>批量发货</span></div>
     </div>
   </div>
 </header>
@@ -451,7 +451,7 @@
 <div class="filterbar">
   <div class="search-box">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input id="searchInput" type="text" placeholder="搜索产品名称、材质或货号，如 PP / PC-2210" />
+    <input id="searchInput" type="text" placeholder="搜索色号、色系或类型，如 大红 / 珠光 / RB-268" />
   </div>
   <div class="chip-row" id="chipRow"></div>
   <select class="sort-select" id="sortSelect">
@@ -472,7 +472,7 @@
 
 <footer>
   <span>本页数据为示例信息，实际规格与价格以正式报价单为准。</span>
-  <span>创艺塑胶 · 演示用产品选购页</span>
+  <span>创艺塑胶 · 演示用产品选购页 · <a href="admin.html" style="color:var(--ink-soft);">卖家后台</a></span>
 </footer>
 
 <div class="selbar" id="selBar" data-empty="true">
@@ -481,7 +481,7 @@
     <span class="preview" id="selPreview"></span>
     <a class="selbar-link" id="clearSel">清空选品单</a>
   </div>
-  <button class="btn-inquire" id="inquireBtn">生成询价清单 →</button>
+  <button class="btn-inquire" id="inquireBtn">去结算 →</button>
 </div>
 
 <div class="modal-overlay" id="modalOverlay" data-open="false">
@@ -491,43 +491,69 @@
 </div>
 
 <script>
-const MATERIALS = {
-  PP:  {label:'PP 聚丙烯',  color:'var(--c-pp)'},
-  PE:  {label:'PE 聚乙烯',  color:'var(--c-pe)'},
-  PVC: {label:'PVC 聚氯乙烯', color:'var(--c-pvc)'},
-  ABS: {label:'ABS 工程塑料', color:'var(--c-abs)'},
-  PC:  {label:'PC 聚碳酸酯', color:'var(--c-pc)'},
-  EVA: {label:'EVA 泡棉材料', color:'var(--c-eva)'},
+const COLOR_FAMILIES = {
+  RED:    {label:'红色系'},
+  ORANGE: {label:'橙黄系'},
+  GREEN:  {label:'绿色系'},
+  BLUE:   {label:'蓝紫系'},
+  BW:     {label:'黑白灰系'},
+  EFFECT: {label:'特殊效果'},
 };
 
-const PRODUCTS = [
-  {id:'pp-001', mat:'PP', name:'PP 均聚注塑颗粒', code:'PP-T30', specs:[['密度','0.90 g/cm³'],['熔指','30 g/10min'],['包装','25kg/袋']], price:7.8, unit:'元/kg', stock:'现货充足', desc:'通用注塑级聚丙烯颗粒，流动性好，适用于日用品、文具及薄壁件注塑成型。', img:'https://placehold.co/500x375/c0392b/ffffff?text=PP-T30'},
-  {id:'pp-002', mat:'PP', name:'PP 共聚抗冲颗粒', code:'PP-K20', specs:[['密度','0.91 g/cm³'],['冲击强度','38 kJ/m²'],['包装','25kg/袋']], price:8.6, unit:'元/kg', stock:'现货充足', desc:'抗冲共聚型号，低温韧性优秀，常用于汽车内饰件与周转箱。', img:'https://placehold.co/500x375/c0392b/ffffff?text=PP-K20'},
-  {id:'pp-003', mat:'PP', name:'PP 阻燃板材', code:'PP-FR5', specs:[['厚度','5mm'],['阻燃级','UL94 V0'],['幅面','1.22×2.44m']], price:46, unit:'元/张', stock:'库存较低', desc:'V0级阻燃PP板，适用于电气设备外壳及防腐工程隔板。', img:'https://placehold.co/500x375/c0392b/ffffff?text=PP-FR5'},
-  {id:'pe-001', mat:'PE', name:'HDPE 高密度颗粒', code:'PE-H50', specs:[['密度','0.954 g/cm³'],['熔指','5 g/10min'],['包装','25kg/袋']], price:7.2, unit:'元/kg', stock:'现货充足', desc:'高密度聚乙烯，刚性与耐化学性俱佳，适合中空吹塑容器与管材。', img:'https://placehold.co/500x375/c0392b/ffffff?text=PE-H50'},
-  {id:'pe-002', mat:'PE', name:'LDPE 薄膜级颗粒', code:'PE-L18', specs:[['密度','0.922 g/cm³'],['熔指','2 g/10min'],['包装','25kg/袋']], price:7.9, unit:'元/kg', stock:'现货充足', desc:'低密度聚乙烯，透明度高、柔韧性好，常用于包装薄膜与软管。', img:'https://placehold.co/500x375/c0392b/ffffff?text=PE-L18'},
-  {id:'pe-003', mat:'PE', name:'PE100 给水管材', code:'PE-D110', specs:[['外径','110mm'],['壁厚','6.6mm'],['压力等级','PN1.0']], price:88, unit:'元/米', stock:'现货充足', desc:'PE100级给水管，符合饮用水管材标准，耐压稳定，焊接施工方便。'},
-  {id:'pvc-001', mat:'PVC', name:'PVC 排水管材', code:'PVC-D110', specs:[['外径','110mm'],['壁厚','3.2mm'],['长度','4m/支']], price:32, unit:'元/支', stock:'现货充足', desc:'UPVC排水管，耐腐蚀、阻燃性好，广泛用于建筑排水系统。'},
-  {id:'pvc-002', mat:'PVC', name:'PVC 装饰硬板', code:'PVC-S10', specs:[['厚度','10mm'],['密度','0.55 g/cm³'],['幅面','1.22×2.44m']], price:128, unit:'元/张', stock:'库存较低', desc:'PVC自由发泡板，质轻易加工，适用于广告展示与室内装饰。'},
-  {id:'pvc-003', mat:'PVC', name:'PVC 透明软管', code:'PVC-C8', specs:[['内径','8mm'],['壁厚','1.5mm'],['长度','100m/卷']], price:3.6, unit:'元/米', stock:'现货充足', desc:'食品级透明软管，柔软耐折，适用于饮料输送及实验室用途。'},
-  {id:'abs-001', mat:'ABS', name:'ABS 注塑通用颗粒', code:'ABS-G15', specs:[['密度','1.05 g/cm³'],['冲击强度','25 kJ/m²'],['包装','25kg/袋']], price:13.5, unit:'元/kg', stock:'现货充足', desc:'通用级ABS颗粒，表面光泽好，常用于家电外壳及玩具结构件。'},
-  {id:'abs-002', mat:'ABS', name:'ABS 电镀级颗粒', code:'ABS-EP', specs:[['密度','1.06 g/cm³'],['熔指','22 g/10min'],['包装','25kg/袋']], price:16.2, unit:'元/kg', stock:'库存较低', desc:'专用于电镀工艺的高光泽ABS料，附着力强，适合汽车装饰件。'},
-  {id:'abs-003', mat:'ABS', name:'ABS 工程板材', code:'ABS-B6', specs:[['厚度','6mm'],['颜色','本白/黑'],['幅面','1.22×2.44m']], price:198, unit:'元/张', stock:'现货充足', desc:'高强度ABS板，易于热弯加工，常用于设备外壳与模型制作。'},
-  {id:'pc-001', mat:'PC', name:'PC 透明颗粒', code:'PC-V30', specs:[['密度','1.20 g/cm³'],['透光率','89%'],['包装','25kg/袋']], price:24.5, unit:'元/kg', stock:'现货充足', desc:'高透明聚碳酸酯颗粒，耐冲击、耐候性强，适合灯具及防护件。'},
-  {id:'pc-002', mat:'PC', name:'PC 阳光板', code:'PC-SH8', specs:[['厚度','8mm'],['层数','双层中空'],['幅面','2.1×6m']], price:168, unit:'元/卷', stock:'现货充足', desc:'双层中空阳光板，隔热保温，广泛用于温室大棚与雨棚顶。'},
-  {id:'pc-003', mat:'PC', name:'PC 防爆面板', code:'PC-AR5', specs:[['厚度','5mm'],['抗冲击','UL752 Lv1'],['幅面','1.22×2.44m']], price:312, unit:'元/张', stock:'库存较低', desc:'防爆等级PC板，用于安防隔断及防护窗，抗暴击性能优异。'},
-  {id:'eva-001', mat:'EVA', name:'EVA 包装泡棉', code:'EVA-F10', specs:[['厚度','10mm'],['密度','0.12 g/cm³'],['颜色','黑/灰/蓝']], price:22, unit:'元/平米', stock:'现货充足', desc:'高弹性EVA泡棉，缓冲减震效果好，常用于精密仪器包装内衬。'},
-  {id:'eva-002', mat:'EVA', name:'EVA 运动鞋材', code:'EVA-S20', specs:[['厚度','20mm'],['硬度','Asker C 45'],['密度','0.15 g/cm³']], price:34, unit:'元/平米', stock:'现货充足', desc:'回弹性优异的鞋材级EVA，用于运动鞋中底及瑜伽垫制作。'},
-  {id:'eva-003', mat:'EVA', name:'EVA 太阳能封装膜', code:'EVA-PV4', specs:[['厚度','0.4mm'],['交联度','≥80%'],['幅面','1m×宽幅']], price:9.5, unit:'元/平米', stock:'库存较低', desc:'光伏组件专用EVA封装胶膜，透光率高，封装稳定性好。'},
+const DEFAULT_PRODUCTS = [
+  {id:'c-001', family:'RED', type:'色母粒', name:'中国红色母粒', code:'RB-268', hex:'#C1272D', specs:[['载体树脂','PP / ABS'],['添加比例','2–4%'],['色差ΔE','≤0.5']], price:38, unit:'元/kg', stock:180, sold:340, desc:'高遮盖力大红色母粒，耐候性好，常用于家电外壳与节庆用品注塑。'},
+  {id:'c-002', family:'RED', type:'定制配色', name:'酒红色定制配色', code:'RC-512', hex:'#7B2D26', specs:[['载体树脂','不限(按需适配)'],['打样周期','48h'],['最小起订','5kg起']], price:0, unit:'询价', stock:null, sold:34, desc:'按客户提供的色板或Pantone色号定制调色，提供小样确认后再批量生产。'},
+  {id:'c-003', family:'RED', type:'成型样品', name:'红色化妆品瓶盖样品', code:'RS-104', hex:'#B53A39', specs:[['工艺','注塑成型'],['表面效果','哑光'],['应用','化妆品包装']], price:0, unit:'样品', stock:null, sold:21, desc:'采用RB-268色母粒注塑成型的实物样品，可直观查看上色后的质感与光泽。', img:'https://placehold.co/500x375/b53a39/ffffff?text=样品图'},
+  {id:'c-004', family:'ORANGE', type:'色母粒', name:'活力橙色母粒', code:'OB-330', hex:'#E2722A', specs:[['载体树脂','PE / PP'],['添加比例','2–3%'],['色差ΔE','≤0.5']], price:34, unit:'元/kg', stock:220, sold:410, desc:'明亮橙色调，分散性好，适用于儿童用品及运动器材类制品。'},
+  {id:'c-005', family:'ORANGE', type:'色母粒', name:'柠檬黄色母粒', code:'YB-118', hex:'#E8B923', specs:[['载体树脂','PP / PS'],['添加比例','1.5–3%'],['色差ΔE','≤0.5']], price:32, unit:'元/kg', stock:95, sold:560, desc:'高纯度黄色色母粒，耐迁移性强，常用于文具与收纳用品着色。'},
+  {id:'c-006', family:'ORANGE', type:'成型样品', name:'橙色收纳盒样品', code:'OS-201', hex:'#D9762F', specs:[['工艺','注塑成型'],['表面效果','光面'],['应用','家居收纳']], price:0, unit:'样品', stock:null, sold:19, desc:'OB-330色母粒实际成型效果样品，颜色饱满均匀，无色斑色差。', img:'https://placehold.co/500x375/d9762f/ffffff?text=样品图'},
+  {id:'c-007', family:'GREEN', type:'色母粒', name:'森林绿色母粒', code:'GB-405', hex:'#2C6E49', specs:[['载体树脂','PP / PE'],['添加比例','2–4%'],['色差ΔE','≤0.5']], price:36, unit:'元/kg', stock:12, sold:88, desc:'沉稳绿色调，耐光老化性能优良，适合户外用品与园艺制品。'},
+  {id:'c-008', family:'GREEN', type:'定制配色', name:'薄荷绿定制配色', code:'GC-318', hex:'#7FB8A4', specs:[['载体树脂','不限(按需适配)'],['打样周期','48h'],['最小起订','5kg起']], price:0, unit:'询价', stock:null, sold:27, desc:'清新薄荷色调，可根据客户产品定位微调饱和度与明度，确保品牌色统一。'},
+  {id:'c-009', family:'BLUE', type:'色母粒', name:'天空蓝色母粒', code:'BB-512', hex:'#2E6F9E', specs:[['载体树脂','PP / ABS'],['添加比例','2–3%'],['色差ΔE','≤0.5']], price:35, unit:'元/kg', stock:140, sold:275, desc:'清透蓝色调，分散均匀不发花，常用于电子产品外壳及玩具件。'},
+  {id:'c-010', family:'BLUE', type:'成型样品', name:'蓝色电器面板样品', code:'BS-220', hex:'#2A5C82', specs:[['工艺','注塑成型'],['表面效果','光面'],['应用','小家电外壳']], price:0, unit:'样品', stock:null, sold:15, desc:'BB-512色母粒实际注塑样品，展示量产状态下的色泽稳定性。', img:'https://placehold.co/500x375/2a5c82/ffffff?text=样品图'},
+  {id:'c-011', family:'BLUE', type:'定制配色', name:'雾紫色定制配色', code:'PC-614', hex:'#6B5B95', specs:[['载体树脂','不限(按需适配)'],['打样周期','48h'],['最小起订','5kg起']], price:0, unit:'询价', stock:null, sold:22, desc:'低饱和雾紫调，适合中高端美妆与家居产品的品牌色定制。'},
+  {id:'c-012', family:'BW', type:'色母粒', name:'高遮盖黑色母粒', code:'KB-001', hex:'#1C1C1C', specs:[['载体树脂','通用全树脂'],['添加比例','1.5–2.5%'],['遮盖力','优']], price:18, unit:'元/kg', stock:860, sold:2200, desc:'通用型黑色色母粒，遮盖力强、性价比高，是用量最大的基础色之一。'},
+  {id:'c-013', family:'BW', type:'色母粒', name:'纯净白色母粒', code:'WB-002', hex:'#F1EFEA', specs:[['载体树脂','通用全树脂'],['添加比例','3–5%'],['白度','≥85']], price:20, unit:'元/kg', stock:430, sold:980, desc:'高白度白色母粒，遮黄性好，适用于日用品及医疗器械外壳。'},
+  {id:'c-014', family:'EFFECT', type:'色母粒', name:'珠光银色母粒', code:'SB-880', hex:'#C7CCD1', specs:[['载体树脂','PP / ABS'],['添加比例','3–6%'],['效果','金属珠光']], price:58, unit:'元/kg', stock:8, sold:65, desc:'金属质感珠光效果，提升产品高端感，常用于美妆瓶盖与电器装饰件。'},
+  {id:'c-015', family:'EFFECT', type:'成型样品', name:'珠光银化妆品盖样品', code:'SS-330', hex:'#A9AFB6', specs:[['工艺','注塑成型'],['表面效果','珠光哑光'],['应用','美妆包装']], price:0, unit:'样品', stock:null, sold:18, desc:'SB-880色母粒实物效果展示，珠光颗粒分布均匀，质感接近电镀效果。', img:'https://placehold.co/500x375/a9afb6/ffffff?text=样品图'},
 ];
+
+function loadProducts(){
+  try{
+    const raw = localStorage.getItem('cy_products');
+    if(raw){
+      const parsed = JSON.parse(raw);
+      if(Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  }catch(e){}
+  return DEFAULT_PRODUCTS;
+}
+
+const PRODUCTS = loadProducts().filter(p => p.status !== 'off');
+
+function stockLabel(p){
+  if(p.stock === null || p.stock === undefined) return '按需定制';
+  if(p.stock <= 0) return '缺货';
+  if(p.stock <= 20) return `仅剩${p.stock}件`;
+  return '现货充足';
+}
+function stockLow(p){
+  return p.stock !== null && p.stock !== undefined && p.stock > 0 && p.stock <= 20;
+}
+
+function isLightColor(hex){
+  const c = hex.replace('#','');
+  const r = parseInt(c.substring(0,2),16), g = parseInt(c.substring(2,4),16), b = parseInt(c.substring(4,6),16);
+  return (r*299 + g*587 + b*114) / 1000 > 165;
+}
 
 let activeFilter = 'all';
 let selection = new Set();
 
 function chipList(){
-  const cats = ['all', ...Object.keys(MATERIALS)];
+  const cats = ['all', ...Object.keys(COLOR_FAMILIES)];
   return cats.map(c => {
-    const label = c === 'all' ? '全部材质' : MATERIALS[c].label.split(' ')[0];
+    const label = c === 'all' ? '全部色系' : COLOR_FAMILIES[c].label;
     return `<button class="chip" data-cat="${c}" data-active="${c===activeFilter}">${label}</button>`;
   }).join('');
 }
@@ -546,12 +572,13 @@ function renderChips(){
 function getFiltered(){
   const q = document.getElementById('searchInput').value.trim().toLowerCase();
   const sort = document.getElementById('sortSelect').value;
-  let list = PRODUCTS.filter(p => activeFilter === 'all' || p.mat === activeFilter);
+  let list = PRODUCTS.filter(p => activeFilter === 'all' || p.family === activeFilter);
   if(q){
     list = list.filter(p =>
       p.name.toLowerCase().includes(q) ||
       p.code.toLowerCase().includes(q) ||
-      MATERIALS[p.mat].label.toLowerCase().includes(q)
+      p.type.toLowerCase().includes(q) ||
+      COLOR_FAMILIES[p.family].label.toLowerCase().includes(q)
     );
   }
   if(sort === 'price-asc') list = [...list].sort((a,b)=>a.price-b.price);
@@ -560,26 +587,29 @@ function getFiltered(){
 }
 
 function cardTemplate(p){
-  const mat = MATERIALS[p.mat];
+  const fam = COLOR_FAMILIES[p.family];
   const added = selection.has(p.id);
-  const initials = p.mat;
+  const textColor = isLightColor(p.hex) ? '#3A3A3A' : '#FFFFFF';
   const mediaInner = p.img
     ? `<img src="${p.img}" alt="${p.name}" loading="lazy" />`
-    : `<div class="swatch" style="background:${mat.color}">${initials}</div>`;
+    : `<div class="swatch" style="background:${p.hex}; color:${textColor}">${p.code}</div>`;
+  const priceHtml = p.price > 0
+    ? `<div class="card-price">¥${p.price.toFixed(1)} <small>/${p.unit.replace('元/','')}</small></div>`
+    : `<div class="card-price">${p.unit} <small>${stockLabel(p)}</small></div>`;
   return `
   <div class="card" data-id="${p.id}">
     <div class="card-media">
-      <span class="tag-stock" data-low="${p.stock.includes('较低')}">${p.stock}</span>
+      <span class="tag-stock" data-low="${stockLow(p)}">${stockLabel(p)}</span>
       ${mediaInner}
     </div>
     <div class="card-body">
-      <div class="card-cat">${mat.label}</div>
+      <div class="card-cat">${fam.label} · ${p.type}</div>
       <div class="card-name card-name-link" tabindex="0" data-open="${p.id}">${p.name}</div>
       <div class="card-spec">
         ${p.specs.map(s=>`<span>${s[0]} ${s[1]}</span>`).join('')}
       </div>
       <div class="card-foot">
-        <div class="card-price">¥${p.price.toFixed(1)} <small>/${p.unit.replace('元/','')}</small></div>
+        ${priceHtml}
         <button class="btn-add" data-id="${p.id}" data-added="${added}">${added ? '已加入' : '加入选品单'}</button>
       </div>
     </div>
@@ -622,7 +652,7 @@ function renderSelBar(){
   document.getElementById('selCount').textContent = selection.size;
   const preview = [...selection].slice(0,6).map(id=>{
     const p = PRODUCTS.find(x=>x.id===id);
-    return `<span class="dot" style="background:${MATERIALS[p.mat].color}"></span>`;
+    return `<span class="dot" style="background:${p.hex}"></span>`;
   }).join('');
   document.getElementById('selPreview').innerHTML = preview;
 }
@@ -637,32 +667,39 @@ document.getElementById('inquireBtn').addEventListener('click', ()=>{
   if(selection.size === 0) return;
   const items = [...selection].map(id=>{
     const p = PRODUCTS.find(x=>x.id===id);
-    return `· ${p.name}（${p.code}）`;
-  }).join('\n');
-  alert('已生成询价清单（演示）：\n\n' + items + '\n\n实际产品中此处将提交给销售团队并生成正式报价单。');
+    return {id:p.id, name:p.name, code:p.code, family:p.family, type:p.type, hex:p.hex, price:p.price, unit:p.unit, img:p.img||null};
+  });
+  try{
+    localStorage.setItem('cy_checkout_items', JSON.stringify(items));
+  }catch(e){}
+  window.location.href = 'checkout.html';
 });
 
 function openModal(id){
   const p = PRODUCTS.find(x=>x.id===id);
-  const mat = MATERIALS[p.mat];
+  const fam = COLOR_FAMILIES[p.family];
   const added = selection.has(p.id);
+  const textColor = isLightColor(p.hex) ? '#3A3A3A' : '#FFFFFF';
   const mediaInner = p.img
     ? `<img src="${p.img}" alt="${p.name}" />`
-    : `<div class="swatch" style="background:${mat.color}">${p.mat}</div>`;
+    : `<div class="swatch" style="background:${p.hex}; color:${textColor}">${p.code}</div>`;
+  const priceHtml = p.price > 0
+    ? `¥${p.price.toFixed(1)} <small>/${p.unit.replace('元/','')}</small>`
+    : `${p.unit} <small>${stockLabel(p)}</small>`;
   document.getElementById('modalBox').innerHTML = `
     <button class="modal-close" id="modalClose">✕</button>
     <div class="modal-media">${mediaInner}</div>
     <div class="modal-content">
-      <div class="modal-cat">${mat.label} · 货号 ${p.code}</div>
+      <div class="modal-cat">${fam.label} · ${p.type} · 货号 ${p.code}</div>
       <h3>${p.name}</h3>
       <table class="modal-table">
         ${p.specs.map(s=>`<tr><td>${s[0]}</td><td>${s[1]}</td></tr>`).join('')}
-        <tr><td>库存状态</td><td>${p.stock}</td></tr>
+        <tr><td>库存状态</td><td>${stockLabel(p)}</td></tr>
       </table>
       <p class="modal-desc">${p.desc}</p>
       <div class="modal-actions">
         <button class="btn-add" data-id="${p.id}" data-added="${added}" style="flex:1">${added?'已加入选品单':'加入选品单'}</button>
-        <div class="card-price" style="align-self:center; padding:0 12px;">¥${p.price.toFixed(1)} <small>/${p.unit.replace('元/','')}</small></div>
+        <div class="card-price" style="align-self:center; padding:0 12px;">${priceHtml}</div>
       </div>
     </div>`;
   document.getElementById('modalOverlay').dataset.open = 'true';
