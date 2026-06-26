@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>创艺塑胶 · 物流查询</title>
+<style>
+  :root{
+    --bg:#EFEDF4; --panel:#FFFFFF; --ink:#211D2E; --ink-soft:#6B6378;
+    --navy:#3D3166; --navy-deep:#261F45; --amber:#FF6B4D; --amber-deep:#E14B2E;
+    --line:#DDD8E6; --green:#2C8C5E;
+    --mono:'JetBrains Mono','SFMono-Regular',Consolas,monospace;
+    --disp:'Space Grotesk','Archivo',sans-serif;
+    --body:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ background:var(--bg); color:var(--ink); font-family:var(--body); line-height:1.55; padding-bottom:60px; }
+  a{ color:inherit; }
+  .topbar{ background:var(--navy-deep); color:#fff; padding:14px 28px; display:flex; justify-content:space-between; align-items:center; }
+  .topbar .brand{ font-family:var(--disp); font-weight:600; font-size:16px; display:flex; align-items:center; gap:10px; }
+  .topbar .brand .dot{ width:8px; height:8px; border-radius:50%; background:var(--amber); }
+  .topbar a.back{ font-size:13px; color:#C9C2DC; text-decoration:underline; text-decoration-color:rgba(255,255,255,.3); }
+  .topbar a.back:hover{ color:#fff; }
+
+  .wrap{ max-width:640px; margin:0 auto; padding:36px 24px; }
+  h1{ font-family:var(--disp); font-size:24px; margin-bottom:8px; }
+  .sub{ color:var(--ink-soft); font-size:13.5px; margin-bottom:26px; }
+
+  .search-box{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:18px; display:flex; gap:10px; margin-bottom:24px;
+  }
+  .search-box input{
+    flex:1; border:1px solid var(--line); border-radius:7px; padding:11px 13px;
+    font-family:var(--mono); font-size:14px;
+  }
+  .search-box button{
+    background:var(--amber); color:#fff; border:none; padding:11px 20px;
+    border-radius:7px; font-size:14px; font-weight:600; cursor:pointer;
+  }
+  .search-box button:hover{ background:var(--amber-deep); }
+
+  .result-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:24px;
+    display:none;
+  }
+  .result-card[data-show="true"]{ display:block; }
+  .order-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:18px; flex-wrap:wrap; gap:8px; }
+  .order-head .oid{ font-family:var(--mono); font-weight:700; font-size:15px; }
+  .order-head .odate{ font-size:12px; color:var(--ink-soft); }
+
+  .timeline{ display:flex; margin-bottom:22px; }
+  .step{ flex:1; text-align:center; position:relative; }
+  .step .dot{ width:14px; height:14px; border-radius:50%; background:var(--line); margin:0 auto 8px; position:relative; z-index:2; }
+  .step.active .dot{ background:var(--green); }
+  .step .line{ position:absolute; top:6px; left:-50%; width:100%; height:2px; background:var(--line); z-index:1; }
+  .step:first-child .line{ display:none; }
+  .step.active .line{ background:var(--green); }
+  .step .label{ font-size:12px; color:var(--ink-soft); }
+  .step.active .label{ color:var(--green); font-weight:600; }
+
+  .info-row{ display:flex; justify-content:space-between; padding:10px 0; border-top:1px dashed var(--line); font-size:13.5px; }
+  .info-row span:first-child{ color:var(--ink-soft); }
+  .info-row .mono{ font-family:var(--mono); }
+
+  .items-list{ margin-top:16px; }
+  .item-line{ display:flex; justify-content:space-between; font-size:13px; padding:6px 0; color:var(--ink-soft); }
+
+  .empty-state{ text-align:center; padding:40px 0; color:var(--ink-soft); font-size:13.5px; }
+
+  .courier-note{
+    margin-top:18px; background:#F6F4FA; border-radius:8px; padding:12px 14px;
+    font-size:12.5px; color:var(--ink-soft); line-height:1.6;
+  }
+  .courier-note a{ color:var(--navy); text-decoration:underline; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="dot"></span>创艺塑胶 · 物流查询</div>
+  <a class="back" href="index.html">← 返回选购页</a>
+</div>
+
+<div class="wrap">
+  <h1>查询订单与物流状态</h1>
+  <p class="sub">输入提交订单时获得的订单号，查看当前发货进度。</p>
+
+  <div class="search-box">
+    <input type="text" id="orderInput" placeholder="请输入订单号，如 CY123456789">
+    <button id="searchBtn">查询</button>
+  </div>
+
+  <div class="result-card" id="resultCard"></div>
+  <div class="empty-state" id="emptyState" style="display:none;">没有找到这个订单号，请检查是否输入正确，或确认是在同一台设备/浏览器上提交的订单。</div>
+</div>
+
+<script>
+function getOrders(){
+  try{
+    const raw = localStorage.getItem('cy_orders');
+    return raw ? JSON.parse(raw) : [];
+  }catch(e){ return []; }
+}
+
+const STATUS_STEPS = ['待发货','已发货','已签收'];
+
+function renderOrder(order){
+  const card = document.getElementById('resultCard');
+  const stepIndex = STATUS_STEPS.indexOf(order.status);
+  const timelineHtml = STATUS_STEPS.map((s,i)=>`
+    <div class="step ${i<=stepIndex ? 'active':''}">
+      <div class="line"></div>
+      <div class="dot"></div>
+      <div class="label">${s}</div>
+    </div>`).join('');
+
+  const logisticsHtml = order.logistics && order.logistics.trackingNo
+    ? `<div class="info-row"><span>快递公司</span><span>${order.logistics.company || '—'}</span></div>
+       <div class="info-row"><span>运单号</span><span class="mono">${order.logistics.trackingNo}</span></div>
+       <div class="courier-note">可以把运单号复制到 <a href="https://www.kuaidi100.com/" target="_blank" rel="noopener">快递100</a> 或对应快递公司官网/App 查询实时物流轨迹。</div>`
+    : `<div class="info-row"><span>物流信息</span><span>商家尚未填写发货单号</span></div>`;
+
+  const itemsHtml = order.items.map(it=>`
+    <div class="item-line"><span>${it.name} × ${it.qty}</span><span>${it.price>0 ? '¥'+(it.price*it.qty).toFixed(1) : '询价'}</span></div>
+  `).join('');
+
+  card.innerHTML = `
+    <div class="order-head">
+      <span class="oid">订单号 ${order.orderId}</span>
+      <span class="odate">下单时间 ${new Date(order.createdAt).toLocaleString('zh-CN')}</span>
+    </div>
+    <div class="timeline">${timelineHtml}</div>
+    ${logisticsHtml}
+    <div class="info-row"><span>收货人</span><span>${order.customerName}</span></div>
+    <div class="info-row"><span>联系方式</span><span>${order.phone}</span></div>
+    <div class="info-row"><span>收货地址</span><span>${order.address || '—'}</span></div>
+    <div class="items-list">${itemsHtml}</div>
+  `;
+  card.dataset.show = 'true';
+  document.getElementById('emptyState').style.display = 'none';
+}
+
+function doSearch(){
+  const q = document.getElementById('orderInput').value.trim();
+  if(!q) return;
+  const orders = getOrders();
+  const order = orders.find(o => o.orderId.toLowerCase() === q.toLowerCase());
+  if(order){
+    renderOrder(order);
+  } else {
+    document.getElementById('resultCard').dataset.show = 'false';
+    document.getElementById('emptyState').style.display = 'block';
+  }
+}
+
+document.getElementById('searchBtn').addEventListener('click', doSearch);
+document.getElementById('orderInput').addEventListener('keypress', (e)=>{ if(e.key==='Enter') doSearch(); });
+
+// auto-fill from URL ?order=xxx
+const params = new URLSearchParams(window.location.search);
+const orderParam = params.get('order');
+if(orderParam){
+  document.getElementById('orderInput').value = orderParam;
+  doSearch();
+}
+</script>
+
+</body>
+</html>

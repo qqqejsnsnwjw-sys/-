@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>创艺塑胶 · 卖家后台</title>
+<style>
+  :root{
+    --bg: #EFEDF4;
+    --panel: #FFFFFF;
+    --ink: #211D2E;
+    --ink-soft: #6B6378;
+    --navy: #3D3166;
+    --navy-deep: #261F45;
+    --amber: #FF6B4D;
+    --amber-deep: #E14B2E;
+    --line: #DDD8E6;
+    --green: #2C8C5E;
+    --red: #D14B3D;
+    --mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+    --disp: 'Space Grotesk', 'Archivo', sans-serif;
+    --body: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg); color:var(--ink); font-family:var(--body); line-height:1.5;
+    padding-bottom:60px;
+  }
+  a{ color:inherit; }
+  button{ font-family:inherit; cursor:pointer; }
+
+  .topbar{
+    background:var(--navy-deep); color:#fff; padding:14px 28px;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .topbar .brand{ font-family:var(--disp); font-weight:600; font-size:16px; display:flex; align-items:center; gap:10px; }
+  .topbar .brand .dot{ width:8px;height:8px;border-radius:50%;background:var(--amber); }
+  .topbar a.back{ font-size:13px; color:#C9C2DC; text-decoration:underline; text-decoration-color:rgba(255,255,255,.3); }
+  .topbar a.back:hover{ color:#fff; }
+
+  .wrap{ max-width:1180px; margin:0 auto; padding:28px; }
+
+  h1.page-title{ font-family:var(--disp); font-size:24px; font-weight:600; margin-bottom:4px; }
+  .page-sub{ color:var(--ink-soft); font-size:13px; margin-bottom:24px; }
+
+  .stats-row{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr));
+    gap:14px; margin-bottom:28px;
+  }
+  .stat-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:16px 18px;
+  }
+  .stat-card .label{ font-size:12px; color:var(--ink-soft); margin-bottom:8px; }
+  .stat-card .value{ font-family:var(--mono); font-size:26px; font-weight:700; color:var(--navy); }
+  .stat-card .value.warn{ color:var(--amber-deep); }
+  .stat-card .sub{ font-size:11.5px; color:var(--ink-soft); margin-top:4px; }
+
+  .toolbar{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:14px; flex-wrap:wrap; gap:12px;
+  }
+  .toolbar h2{ font-family:var(--disp); font-size:17px; font-weight:600; }
+  .btn-primary{
+    background:var(--amber); color:#fff; border:none; padding:10px 18px;
+    border-radius:7px; font-size:13.5px; font-weight:600;
+  }
+  .btn-primary:hover{ background:var(--amber-deep); }
+  .btn-ghost{
+    background:#fff; border:1px solid var(--line); color:var(--ink-soft);
+    padding:9px 16px; border-radius:7px; font-size:13px;
+  }
+  .btn-ghost:hover{ border-color:var(--navy); color:var(--navy); }
+
+  .table-wrap{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    overflow:hidden; margin-bottom:32px;
+  }
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; }
+  thead tr{ background:#F6F4FA; }
+  th{ text-align:left; padding:12px 14px; font-size:12px; color:var(--ink-soft); font-weight:600; letter-spacing:.02em; }
+  td{ padding:10px 14px; border-top:1px solid var(--line); vertical-align:middle; }
+  tr.off-shelf td{ opacity:.45; }
+
+  .prod-cell{ display:flex; align-items:center; gap:10px; }
+  .swatch-sm{ width:34px; height:34px; border-radius:8px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:9px; font-weight:700; overflow:hidden; }
+  .swatch-sm img{ width:100%; height:100%; object-fit:cover; }
+  .prod-name{ font-weight:600; font-size:13.5px; }
+  .prod-code{ font-family:var(--mono); font-size:11px; color:var(--ink-soft); }
+
+  .badge{ font-size:11px; padding:3px 8px; border-radius:5px; background:#F0EDF7; color:var(--navy); white-space:nowrap; }
+
+  .stock-input{
+    width:64px; border:1px solid var(--line); border-radius:6px; padding:5px 6px;
+    font-family:var(--mono); font-size:13px; text-align:center;
+  }
+  .stock-input:focus{ outline:2px solid var(--amber); border-color:var(--amber); }
+  .stock-na{ color:var(--ink-soft); font-size:12px; }
+  .stock-warn{ color:var(--amber-deep); font-weight:700; }
+  .stock-out{ color:var(--red); font-weight:700; }
+
+  .sold-val{ font-family:var(--mono); font-weight:700; }
+
+  .row-actions{ display:flex; gap:6px; }
+  .icon-btn{
+    border:1px solid var(--line); background:#fff; border-radius:6px;
+    width:30px; height:30px; display:flex; align-items:center; justify-content:center;
+    font-size:13px; color:var(--ink-soft);
+  }
+  .icon-btn:hover{ border-color:var(--navy); color:var(--navy); }
+  .icon-btn.danger:hover{ border-color:var(--red); color:var(--red); }
+
+  .toggle{
+    width:38px; height:22px; border-radius:12px; background:var(--line);
+    position:relative; border:none; cursor:pointer; flex-shrink:0;
+  }
+  .toggle[data-on="true"]{ background:var(--green); }
+  .toggle::after{
+    content:""; position:absolute; top:2px; left:2px; width:18px; height:18px;
+    border-radius:50%; background:#fff; transition:left .15s;
+    box-shadow:0 1px 3px rgba(0,0,0,.3);
+  }
+  .toggle[data-on="true"]::after{ left:18px; }
+
+  .empty-row{ text-align:center; padding:40px; color:var(--ink-soft); font-size:13px; }
+
+  .logi-row{ display:flex; gap:6px; margin-bottom:6px; }
+  .logi-row input{
+    border:1px solid var(--line); border-radius:6px; padding:6px 8px; font-size:12.5px;
+    font-family:inherit; flex:1; min-width:0;
+  }
+  .logi-row input.tracking{ font-family:var(--mono); }
+  .status-select{
+    width:100%; border:1px solid var(--line); border-radius:7px; padding:7px 8px;
+    font-size:12.5px; font-family:inherit;
+  }
+  .status-select[data-status="待发货"]{ color:var(--amber-deep); }
+  .status-select[data-status="已发货"]{ color:var(--navy); }
+  .status-select[data-status="已签收"]{ color:var(--green); }
+  .save-row-btn{
+    margin-top:6px; width:100%; background:var(--navy); color:#fff; border:none;
+    padding:6px 0; border-radius:6px; font-size:12px; cursor:pointer;
+  }
+  .save-row-btn:hover{ background:var(--navy-deep); }
+  .save-row-btn[data-saved="true"]{ background:var(--green); }
+  .order-items-cell{ font-size:12px; color:var(--ink-soft); max-width:220px; }
+  .order-customer-cell{ font-size:12.5px; }
+  .order-customer-cell .phone{ font-family:var(--mono); font-size:11.5px; color:var(--ink-soft); }
+
+  /* ===== Modal form ===== */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(38,31,69,.55);
+    display:none; align-items:center; justify-content:center; z-index:100; padding:20px;
+  }
+  .modal-overlay[data-open="true"]{ display:flex; }
+  .modal{
+    background:#fff; border-radius:12px; max-width:560px; width:100%;
+    max-height:88vh; overflow-y:auto; padding:26px 28px; position:relative;
+  }
+  .modal h3{ font-family:var(--disp); font-size:19px; margin-bottom:18px; }
+  .modal-close{
+    position:absolute; top:16px; right:16px; width:28px; height:28px; border-radius:50%;
+    border:1px solid var(--line); background:#fff; font-size:14px; color:var(--ink-soft);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .form-row{ margin-bottom:14px; }
+  .form-row label{ display:block; font-size:12.5px; color:var(--ink-soft); margin-bottom:5px; }
+  .form-row input, .form-row select, .form-row textarea{
+    width:100%; border:1px solid var(--line); border-radius:7px; padding:9px 11px;
+    font-size:13.5px; font-family:inherit; color:var(--ink);
+  }
+  .form-grid2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .form-grid3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+  .color-row{ display:flex; gap:10px; align-items:center; }
+  .color-row input[type=color]{ width:46px; height:38px; padding:2px; flex-shrink:0; }
+  .color-row input[type=text]{ flex:1; }
+  .specs-hint{ font-size:11.5px; color:var(--ink-soft); margin-top:4px; }
+  .form-actions{ display:flex; gap:10px; margin-top:20px; }
+  .form-actions .btn-primary{ flex:1; text-align:center; }
+  .form-actions .btn-ghost{ flex:1; text-align:center; }
+  .field-error{ color:var(--red); font-size:11.5px; margin-top:4px; display:none; }
+
+  .note-box{
+    background:#FDF3EF; border:1px solid #F3D9CC; border-radius:9px;
+    padding:14px 16px; font-size:12.5px; color:#8A4A30; margin-bottom:24px; line-height:1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="dot"></span>创艺塑胶 · 卖家后台</div>
+  <a class="back" href="index.html">← 返回选购页</a>
+</div>
+
+<div class="wrap">
+  <h1 class="page-title">上货台</h1>
+  <p class="page-sub">管理在架商品、库存与销量数据，保存后会同步到客户看到的选购页面。</p>
+
+  <div class="note-box">
+    ⓘ 数据保存在当前浏览器本地（localStorage），仅你这台设备/这个浏览器能看到管理后台的修改效果；客户在自己设备打开选购页时，看到的是页面自带的默认商品数据。如果需要让所有客户都看到你上架的商品，需要把数据接入真实的后端数据库。
+  </div>
+
+  <div class="stats-row" id="statsRow"></div>
+
+  <div class="toolbar">
+    <h2>商品列表 <span id="prodCount" style="font-weight:400;color:var(--ink-soft);font-size:13px;"></span></h2>
+    <div style="display:flex; gap:10px;">
+      <button class="btn-ghost" id="resetBtn">恢复默认数据</button>
+      <button class="btn-primary" id="addBtn">+ 上架新商品</button>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:30%">商品</th>
+          <th>色系/类型</th>
+          <th>价格</th>
+          <th>库存</th>
+          <th>累计销量</th>
+          <th>上架</th>
+          <th style="width:80px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <div class="toolbar">
+    <h2>订单与发货管理 <span id="orderCount" style="font-weight:400;color:var(--ink-soft);font-size:13px;"></span></h2>
+  </div>
+  <div class="note-box">
+    ⓘ 客户在结算页提交订单后，订单会出现在这里。填好快递公司和运单号、更新状态后保存，客户凭订单号在"查物流"页面能看到你填的发货信息——但同样限于同一浏览器/设备本地数据，不是多端实时同步。
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>订单号 / 时间</th>
+          <th>客户信息</th>
+          <th>商品</th>
+          <th>金额</th>
+          <th style="width:240px">发货信息</th>
+          <th style="width:110px">状态</th>
+        </tr>
+      </thead>
+      <tbody id="orderTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay" data-open="false">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <h3 id="modalTitle">上架新商品</h3>
+    <form id="prodForm">
+      <div class="form-row">
+        <label>商品名称</label>
+        <input type="text" id="f_name" placeholder="如：天空蓝色母粒" required>
+      </div>
+      <div class="form-grid2">
+        <div class="form-row">
+          <label>货号</label>
+          <input type="text" id="f_code" placeholder="如：BB-512" required>
+        </div>
+        <div class="form-row">
+          <label>颜色</label>
+          <div class="color-row">
+            <input type="color" id="f_hexpicker" value="#3D3166">
+            <input type="text" id="f_hex" value="#3D3166" placeholder="#3D3166">
+          </div>
+        </div>
+      </div>
+      <div class="form-grid2">
+        <div class="form-row">
+          <label>色系</label>
+          <select id="f_family">
+            <option value="RED">红色系</option>
+            <option value="ORANGE">橙黄系</option>
+            <option value="GREEN">绿色系</option>
+            <option value="BLUE">蓝紫系</option>
+            <option value="BW">黑白灰系</option>
+            <option value="EFFECT">特殊效果</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>类型</label>
+          <select id="f_type">
+            <option value="色母粒">色母粒（可计数库存）</option>
+            <option value="定制配色">定制配色（按需，不计库存）</option>
+            <option value="成型样品">成型样品（按需，不计库存）</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid3">
+        <div class="form-row">
+          <label>价格(元，0=询价)</label>
+          <input type="number" id="f_price" min="0" step="0.1" value="0">
+        </div>
+        <div class="form-row">
+          <label>单位</label>
+          <input type="text" id="f_unit" placeholder="如：元/kg" value="元/kg">
+        </div>
+        <div class="form-row" id="stockRow">
+          <label>库存数量</label>
+          <input type="number" id="f_stock" min="0" step="1" value="100">
+        </div>
+      </div>
+      <div class="form-row">
+        <label>商品图片链接（留空则用颜色色块占位）</label>
+        <input type="text" id="f_img" placeholder="https://...">
+      </div>
+      <div class="form-row">
+        <label>规格参数（每行一条，用"："分隔，如  载体树脂：PP / ABS）</label>
+        <textarea id="f_specs" rows="3" placeholder="载体树脂：PP / ABS&#10;添加比例：2–4%&#10;色差ΔE：≤0.5"></textarea>
+      </div>
+      <div class="form-row">
+        <label>产品描述</label>
+        <textarea id="f_desc" rows="2" placeholder="一句话介绍这个产品的特点和用途"></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-ghost" id="cancelBtn">取消</button>
+        <button type="submit" class="btn-primary" id="submitBtn">保存上架</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+const FAMILY_LABEL = { RED:'红色系', ORANGE:'橙黄系', GREEN:'绿色系', BLUE:'蓝紫系', BW:'黑白灰系', EFFECT:'特殊效果' };
+
+const SEED_PRODUCTS = [
+  {id:'c-001', family:'RED', type:'色母粒', name:'中国红色母粒', code:'RB-268', hex:'#C1272D', specs:[['载体树脂','PP / ABS'],['添加比例','2–4%'],['色差ΔE','≤0.5']], price:38, unit:'元/kg', stock:180, sold:340, desc:'高遮盖力大红色母粒，耐候性好，常用于家电外壳与节庆用品注塑。', status:'on'},
+  {id:'c-002', family:'RED', type:'定制配色', name:'酒红色定制配色', code:'RC-512', hex:'#7B2D26', specs:[['载体树脂','不限(按需适配)'],['打样周期','48h'],['最小起订','5kg起']], price:0, unit:'询价', stock:null, sold:34, desc:'按客户提供的色板或Pantone色号定制调色，提供小样确认后再批量生产。', status:'on'},
+  {id:'c-003', family:'RED', type:'成型样品', name:'红色化妆品瓶盖样品', code:'RS-104', hex:'#B53A39', specs:[['工艺','注塑成型'],['表面效果','哑光'],['应用','化妆品包装']], price:0, unit:'样品', stock:null, sold:21, desc:'采用RB-268色母粒注塑成型的实物样品，可直观查看上色后的质感与光泽。', img:'https://placehold.co/500x375/b53a39/ffffff?text=样品图', status:'on'},
+  {id:'c-004', family:'ORANGE', type:'色母粒', name:'活力橙色母粒', code:'OB-330', hex:'#E2722A', specs:[['载体树脂','PE / PP'],['添加比例','2–3%'],['色差ΔE','≤0.5']], price:34, unit:'元/kg', stock:220, sold:410, desc:'明亮橙色调，分散性好，适用于儿童用品及运动器材类制品。', status:'on'},
+  {id:'c-005', family:'ORANGE', type:'色母粒', name:'柠檬黄色母粒', code:'YB-118', hex:'#E8B923', specs:[['载体树脂','PP / PS'],['添加比例','1.5–3%'],['色差ΔE','≤0.5']], price:32, unit:'元/kg', stock:95, sold:560, desc:'高纯度黄色色母粒，耐迁移性强，常用于文具与收纳用品着色。', status:'on'},
+  {id:'c-006', family:'ORANGE', type:'成型样品', name:'橙色收纳盒样品', code:'OS-201', hex:'#D9762F', specs:[['工艺','注塑成型'],['表面效果','光面'],['应用','家居收纳']], price:0, unit:'样品', stock:null, sold:19, desc:'OB-330色母粒实际成型效果样品，颜色饱满均匀，无色斑色差。', img:'https://placehold.co/500x375/d9762f/ffffff?text=样品图', status:'on'},
+  {id:'c-007', family:'GREEN', type:'色母粒', name:'森林绿色母粒', code:'GB-405', hex:'#2C6E49', specs:[['载体树脂','PP / PE'],['添加比例','2–4%'],['色差ΔE','≤0.5']], price:36, unit:'元/kg', stock:12, sold:88, desc:'沉稳绿色调，耐光老化性能优良，适合户外用品与园艺制品。', status:'on'},
+  {id:'c-008', family:'GREEN', type:'定制配色', name:'薄荷绿定制配色', code:'GC-318', hex:'#7FB8A4', specs:[['载体树脂','不限(按需适配)'],['打样周期','48h'],['最小起订','5kg起']], price:0, unit:'询价', stock:null, sold:27, desc:'清新薄荷色调，可根据客户产品定位微调饱和度与明度，确保品牌色统一。', status:'on'},
+  {id:'c-009', family:'BLUE', type:'色母粒', name:'天空蓝色母粒', code:'BB-512', hex:'#2E6F9E', specs:[['载体树脂','PP / ABS'],['添加比例','2–3%'],['色差ΔE','≤0.5']], price:35, unit:'元/kg', stock:140, sold:275, desc:'清透蓝色调，分散均匀不发花，常用于电子产品外壳及玩具件。', status:'on'},
+  {id:'c-010', family:'BLUE', type:'成型样品', name:'蓝色电器面板样品', code:'BS-220', hex:'#2A5C82', specs:[['工艺','注塑成型'],['表面效果','光面'],['应用','小家电外壳']], price:0, unit:'样品', stock:null, sold:15, desc:'BB-512色母粒实际注塑样品，展示量产状态下的色泽稳定性。', img:'https://placehold.co/500x375/2a5c82/ffffff?text=样品图', status:'on'},
+  {id:'c-011', family:'BLUE', type:'定制配色', name:'雾紫色定制配色', code:'PC-614', hex:'#6B5B95', specs:[['载体树脂','不限(按需适配)'],['打样周期','48h'],['最小起订','5kg起']], price:0, unit:'询价', stock:null, sold:22, desc:'低饱和雾紫调，适合中高端美妆与家居产品的品牌色定制。', status:'on'},
+  {id:'c-012', family:'BW', type:'色母粒', name:'高遮盖黑色母粒', code:'KB-001', hex:'#1C1C1C', specs:[['载体树脂','通用全树脂'],['添加比例','1.5–2.5%'],['遮盖力','优']], price:18, unit:'元/kg', stock:860, sold:2200, desc:'通用型黑色色母粒，遮盖力强、性价比高，是用量最大的基础色之一。', status:'on'},
+  {id:'c-013', family:'BW', type:'色母粒', name:'纯净白色母粒', code:'WB-002', hex:'#F1EFEA', specs:[['载体树脂','通用全树脂'],['添加比例','3–5%'],['白度','≥85']], price:20, unit:'元/kg', stock:430, sold:980, desc:'高白度白色母粒，遮黄性好，适用于日用品及医疗器械外壳。', status:'on'},
+  {id:'c-014', family:'EFFECT', type:'色母粒', name:'珠光银色母粒', code:'SB-880', hex:'#C7CCD1', specs:[['载体树脂','PP / ABS'],['添加比例','3–6%'],['效果','金属珠光']], price:58, unit:'元/kg', stock:8, sold:65, desc:'金属质感珠光效果，提升产品高端感，常用于美妆瓶盖与电器装饰件。', status:'on'},
+  {id:'c-015', family:'EFFECT', type:'成型样品', name:'珠光银化妆品盖样品', code:'SS-330', hex:'#A9AFB6', specs:[['工艺','注塑成型'],['表面效果','珠光哑光'],['应用','美妆包装']], price:0, unit:'样品', stock:null, sold:18, desc:'SB-880色母粒实物效果展示，珠光颗粒分布均匀，质感接近电镀效果。', img:'https://placehold.co/500x375/a9afb6/ffffff?text=样品图', status:'on'},
+];
+
+const STORE_KEY = 'cy_products';
+
+function loadProducts(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      if(Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  }catch(e){}
+  return JSON.parse(JSON.stringify(SEED_PRODUCTS));
+}
+
+function saveProducts(){
+  localStorage.setItem(STORE_KEY, JSON.stringify(products));
+}
+
+let products = loadProducts();
+let editingId = null;
+
+function isLightColor(hex){
+  try{
+    const c = hex.replace('#','');
+    const r = parseInt(c.substring(0,2),16), g = parseInt(c.substring(2,4),16), b = parseInt(c.substring(4,6),16);
+    return (r*299 + g*587 + b*114) / 1000 > 165;
+  }catch(e){ return false; }
+}
+
+function renderStats(){
+  const onShelf = products.filter(p=>p.status!=='off');
+  const totalStock = onShelf.reduce((sum,p)=> sum + (p.stock!=null ? p.stock : 0), 0);
+  const totalSold = products.reduce((sum,p)=> sum + (p.sold||0), 0);
+  const lowStock = onShelf.filter(p=> p.stock!=null && p.stock>0 && p.stock<=20).length;
+  const outStock = onShelf.filter(p=> p.stock!=null && p.stock<=0).length;
+  document.getElementById('statsRow').innerHTML = `
+    <div class="stat-card"><div class="label">在架商品数</div><div class="value">${onShelf.length}</div><div class="sub">共 ${products.length} 个商品（含下架）</div></div>
+    <div class="stat-card"><div class="label">计数库存合计</div><div class="value">${totalStock}</div><div class="sub">不含"按需定制/样品"类商品</div></div>
+    <div class="stat-card"><div class="label">累计销量</div><div class="value">${totalSold}</div><div class="sub">所有商品历史成交总数</div></div>
+    <div class="stat-card"><div class="label">库存预警</div><div class="value ${lowStock+outStock>0?'warn':''}">${lowStock}</div><div class="sub">缺货 ${outStock} 项 · 低库存(≤20) ${lowStock} 项</div></div>
+  `;
+}
+
+function stockCellHtml(p){
+  if(p.type !== '色母粒'){
+    return `<span class="stock-na">按需定制</span>`;
+  }
+  const cls = p.stock <= 0 ? 'stock-out' : (p.stock <= 20 ? 'stock-warn' : '');
+  return `<input type="number" class="stock-input ${cls}" data-id="${p.id}" data-field="stock" value="${p.stock}" min="0" step="1">`;
+}
+
+function renderTable(){
+  const tbody = document.getElementById('tableBody');
+  document.getElementById('prodCount').textContent = `共 ${products.length} 项`;
+  if(products.length === 0){
+    tbody.innerHTML = `<tr><td colspan="7" class="empty-row">还没有上架任何商品，点右上角"上架新商品"试试</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = products.map(p=>{
+    const textColor = isLightColor(p.hex) ? '#3A3A3A' : '#fff';
+    const media = p.img
+      ? `<div class="swatch-sm"><img src="${p.img}" alt=""></div>`
+      : `<div class="swatch-sm" style="background:${p.hex};color:${textColor}">${p.code}</div>`;
+    const priceLabel = p.price > 0 ? `¥${Number(p.price).toFixed(1)}/${(p.unit||'').replace('元/','')}` : (p.unit || '询价');
+    return `
+    <tr data-row-id="${p.id}" class="${p.status==='off' ? 'off-shelf':''}">
+      <td>
+        <div class="prod-cell">
+          ${media}
+          <div>
+            <div class="prod-name">${p.name}</div>
+            <div class="prod-code">${p.code}</div>
+          </div>
+        </div>
+      </td>
+      <td><span class="badge">${FAMILY_LABEL[p.family]||p.family}</span> ${p.type}</td>
+      <td>${priceLabel}</td>
+      <td>${stockCellHtml(p)}</td>
+      <td><input type="number" class="stock-input sold-val" data-id="${p.id}" data-field="sold" value="${p.sold||0}" min="0" step="1"></td>
+      <td><button class="toggle" data-id="${p.id}" data-on="${p.status!=='off'}"></button></td>
+      <td>
+        <div class="row-actions">
+          <button class="icon-btn" data-edit="${p.id}" title="编辑">✎</button>
+          <button class="icon-btn danger" data-del="${p.id}" title="删除">🗑</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  tbody.querySelectorAll('input[data-field]').forEach(input=>{
+    input.addEventListener('change', (e)=>{
+      const id = e.target.dataset.id, field = e.target.dataset.field;
+      const p = products.find(x=>x.id===id);
+      let val = parseInt(e.target.value, 10);
+      if(isNaN(val) || val < 0) val = 0;
+      p[field] = val;
+      saveProducts();
+      renderStats();
+      renderTable();
+    });
+  });
+  tbody.querySelectorAll('.toggle').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.dataset.id;
+      const p = products.find(x=>x.id===id);
+      p.status = p.status === 'off' ? 'on' : 'off';
+      saveProducts();
+      renderStats();
+      renderTable();
+    });
+  });
+  tbody.querySelectorAll('[data-edit]').forEach(btn=>{
+    btn.addEventListener('click', ()=> openModal(btn.dataset.edit));
+  });
+  tbody.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(confirm('确定要删除这个商品吗？删除后无法恢复。')){
+        products = products.filter(x=>x.id!==btn.dataset.del);
+        saveProducts();
+        renderStats();
+        renderTable();
+      }
+    });
+  });
+}
+
+function openModal(id){
+  editingId = id || null;
+  const form = document.getElementById('prodForm');
+  form.reset();
+  document.getElementById('modalTitle').textContent = id ? '编辑商品' : '上架新商品';
+  document.getElementById('stockRow').style.display = '';
+  if(id){
+    const p = products.find(x=>x.id===id);
+    document.getElementById('f_name').value = p.name;
+    document.getElementById('f_code').value = p.code;
+    document.getElementById('f_hex').value = p.hex;
+    document.getElementById('f_hexpicker').value = p.hex;
+    document.getElementById('f_family').value = p.family;
+    document.getElementById('f_type').value = p.type;
+    document.getElementById('f_price').value = p.price;
+    document.getElementById('f_unit').value = p.unit;
+    document.getElementById('f_stock').value = p.stock != null ? p.stock : 100;
+    document.getElementById('f_img').value = p.img || '';
+    document.getElementById('f_specs').value = (p.specs||[]).map(s=>`${s[0]}：${s[1]}`).join('\n');
+    document.getElementById('f_desc').value = p.desc || '';
+  } else {
+    document.getElementById('f_hex').value = '#3D3166';
+    document.getElementById('f_hexpicker').value = '#3D3166';
+    document.getElementById('f_price').value = 0;
+    document.getElementById('f_unit').value = '元/kg';
+    document.getElementById('f_stock').value = 100;
+  }
+  toggleStockRowVisibility();
+  document.getElementById('modalOverlay').dataset.open = 'true';
+}
+function closeModal(){ document.getElementById('modalOverlay').dataset.open = 'false'; }
+
+function toggleStockRowVisibility(){
+  const isCountable = document.getElementById('f_type').value === '色母粒';
+  document.getElementById('stockRow').style.display = isCountable ? '' : 'none';
+}
+
+document.getElementById('f_type').addEventListener('change', toggleStockRowVisibility);
+document.getElementById('f_hexpicker').addEventListener('input', (e)=>{
+  document.getElementById('f_hex').value = e.target.value;
+});
+document.getElementById('f_hex').addEventListener('input', (e)=>{
+  if(/^#[0-9A-Fa-f]{6}$/.test(e.target.value)){
+    document.getElementById('f_hexpicker').value = e.target.value;
+  }
+});
+
+document.getElementById('addBtn').addEventListener('click', ()=> openModal(null));
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('cancelBtn').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', (e)=>{
+  if(e.target.id === 'modalOverlay') closeModal();
+});
+
+document.getElementById('prodForm').addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const type = document.getElementById('f_type').value;
+  const specsRaw = document.getElementById('f_specs').value.trim();
+  const specs = specsRaw ? specsRaw.split('\n').filter(l=>l.trim()).map(line=>{
+    const idx = line.indexOf('：') >= 0 ? line.indexOf('：') : line.indexOf(':');
+    if(idx < 0) return [line.trim(), ''];
+    return [line.slice(0,idx).trim(), line.slice(idx+1).trim()];
+  }) : [];
+
+  const data = {
+    name: document.getElementById('f_name').value.trim(),
+    code: document.getElementById('f_code').value.trim(),
+    hex: document.getElementById('f_hex').value.trim() || '#999999',
+    family: document.getElementById('f_family').value,
+    type: type,
+    price: parseFloat(document.getElementById('f_price').value) || 0,
+    unit: document.getElementById('f_unit').value.trim() || '元/kg',
+    stock: type === '色母粒' ? (parseInt(document.getElementById('f_stock').value,10) || 0) : null,
+    img: document.getElementById('f_img').value.trim() || null,
+    specs: specs,
+    desc: document.getElementById('f_desc').value.trim(),
+  };
+
+  if(editingId){
+    const p = products.find(x=>x.id===editingId);
+    Object.assign(p, data);
+  } else {
+    data.id = 'c-' + Date.now();
+    data.sold = 0;
+    data.status = 'on';
+    products.unshift(data);
+  }
+  saveProducts();
+  renderStats();
+  renderTable();
+  closeModal();
+});
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  if(confirm('确定要恢复默认商品数据吗？你之前上架/编辑/删除的内容都会被覆盖丢失。')){
+    products = JSON.parse(JSON.stringify(SEED_PRODUCTS));
+    saveProducts();
+    renderStats();
+    renderTable();
+  }
+});
+
+renderStats();
+renderTable();
+
+/* ===== Order / shipping management ===== */
+const ORDERS_KEY = 'cy_orders';
+const STATUS_OPTIONS = ['待发货','已发货','已签收'];
+
+function getOrders(){
+  try{
+    const raw = localStorage.getItem(ORDERS_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  }catch(e){ return []; }
+}
+function saveOrders(orders){
+  localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+}
+
+function renderOrders(){
+  const orders = getOrders();
+  document.getElementById('orderCount').textContent = `共 ${orders.length} 单`;
+  const tbody = document.getElementById('orderTableBody');
+  if(orders.length === 0){
+    tbody.innerHTML = `<tr><td colspan="6" class="empty-row">还没有客户提交订单。客户在结算页"我已完成付款"后，订单会出现在这里。</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = orders.map((o, idx)=>{
+    const itemsText = o.items.map(it=>`${it.name} ×${it.qty}`).join('、');
+    const amountText = o.subtotal > 0 ? `¥${o.subtotal.toFixed(1)}` : '询价';
+    const logi = o.logistics || {company:'', trackingNo:''};
+    return `
+    <tr data-order-idx="${idx}">
+      <td>
+        <div style="font-family:var(--mono); font-weight:700; font-size:12.5px;">${o.orderId}</div>
+        <div style="font-size:11px; color:var(--ink-soft);">${new Date(o.createdAt).toLocaleString('zh-CN')}</div>
+      </td>
+      <td class="order-customer-cell">
+        <div>${o.customerName}</div>
+        <div class="phone">${o.phone}</div>
+      </td>
+      <td class="order-items-cell">${itemsText}</td>
+      <td>${amountText}</td>
+      <td>
+        <div class="logi-row">
+          <input type="text" placeholder="快递公司" class="logi-company" data-idx="${idx}" value="${logi.company||''}">
+        </div>
+        <div class="logi-row">
+          <input type="text" placeholder="运单号" class="logi-tracking tracking" data-idx="${idx}" value="${logi.trackingNo||''}">
+        </div>
+        <button class="save-row-btn" data-idx="${idx}">保存发货信息</button>
+      </td>
+      <td>
+        <select class="status-select" data-idx="${idx}" data-status="${o.status}">
+          ${STATUS_OPTIONS.map(s=>`<option value="${s}" ${s===o.status?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
+    </tr>`;
+  }).join('');
+
+  tbody.querySelectorAll('.status-select').forEach(sel=>{
+    sel.addEventListener('change', ()=>{
+      const orders = getOrders();
+      const idx = parseInt(sel.dataset.idx, 10);
+      orders[idx].status = sel.value;
+      sel.dataset.status = sel.value;
+      saveOrders(orders);
+    });
+  });
+  tbody.querySelectorAll('.save-row-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const idx = parseInt(btn.dataset.idx, 10);
+      const orders = getOrders();
+      const company = tbody.querySelector(`.logi-company[data-idx="${idx}"]`).value.trim();
+      const trackingNo = tbody.querySelector(`.logi-tracking[data-idx="${idx}"]`).value.trim();
+      orders[idx].logistics = { company, trackingNo, updatedAt: new Date().toISOString() };
+      if(trackingNo && orders[idx].status === '待发货'){
+        orders[idx].status = '已发货';
+        const sel = tbody.querySelector(`.status-select[data-idx="${idx}"]`);
+        sel.value = '已发货';
+        sel.dataset.status = '已发货';
+      }
+      saveOrders(orders);
+      btn.dataset.saved = 'true';
+      btn.textContent = '已保存 ✓';
+      setTimeout(()=>{ btn.dataset.saved=''; btn.textContent='保存发货信息'; }, 1500);
+    });
+  });
+}
+
+renderOrders();
+</script>
+
+</body>
+</html>
